@@ -24,14 +24,6 @@ public class GithubClient implements Client {
                 .build();
     }
 
-    public String getBaseUrl() {
-        return baseUrl;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
     @Override
     public <T> CompletableFuture<HttpResponse<T>> send(HttpRequest request, HttpResponse.BodyHandler<T> bodyHandler) {
         return httpClient.sendAsync(request, bodyHandler);
