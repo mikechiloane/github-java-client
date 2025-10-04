@@ -7,6 +7,6 @@ import java.util.concurrent.CompletableFuture;
 public interface Client {
     <T> CompletableFuture<HttpResponse<T>> send(HttpRequest request, HttpResponse.BodyHandler<T> bodyHandler);
 
-    HttpRequest.Builder requestBuilder();
+    HttpRequest.Builder requestBuilder(String path);
 
 }
