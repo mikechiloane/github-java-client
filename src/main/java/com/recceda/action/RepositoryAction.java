@@ -67,16 +67,13 @@ public class RepositoryAction {
         }
     }
 
-    public void createFile(FileContentRequest fileContentRequest, String owner, String path) throws JsonProcessingException, ExecutionException, InterruptedException {
-        HttpRequest request = client.requestBuilder(SLASH+REPOS+SLASH+owner+SLASH+CONTENTS+SLASH+path)
+    public void createFile(FileContentRequest fileContentRequest, String owner, String repo, String path) throws JsonProcessingException, ExecutionException, InterruptedException {
+        HttpRequest request = client.requestBuilder(SLASH + REPOS + SLASH + owner + SLASH + repo + SLASH + CONTENTS + SLASH + path)
                 .PUT(HttpRequest.BodyPublishers.ofString(RequestMapper.toJson(fileContentRequest)))
                 .build();
-
-        HttpResponse<String> response = client.send(request,HttpResponse.BodyHandlers.ofString())
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString())
                 .get();
-
-        System.out.println(response.body());
-
+        if (response.statusCode() != 201) throw new RuntimeException("Failed to create file.");
     }
 
 }
