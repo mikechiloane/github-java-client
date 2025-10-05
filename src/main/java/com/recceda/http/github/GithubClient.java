@@ -10,6 +10,9 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
+import static com.recceda.Constants.BEARER;
+import static com.recceda.Constants.WHITESPACE;
+
 public class GithubClient implements Client {
     private final HttpClient httpClient;
     private final String baseUrl;
@@ -33,6 +36,6 @@ public class GithubClient implements Client {
     public HttpRequest.Builder requestBuilder(String path) {
         return HttpRequest.newBuilder()
                 .uri(URI.create(this.baseUrl+path))
-                .header("Authorization",this.token);
+                .header("Authorization", WHITESPACE +BEARER+ this.token);
     }
 }

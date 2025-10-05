@@ -5,7 +5,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.recceda.Constants.*;
 import com.recceda.elements.Repository;
 import com.recceda.http.Client;
+import com.recceda.mapper.RequestMapper;
 import com.recceda.mapper.ResponseMapper;
+import com.recceda.requests.repository.CreateRepositoryRequest;
 
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -38,11 +40,21 @@ public class RepositoryAction {
         return ResponseMapper.fromResponse(response, Repository.class);
     }
 
-    public List<Repository> getAllRepositories(final String owner) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public List<Repository> getAllRepositoriesByOwner(final String owner) throws ExecutionException, InterruptedException, JsonProcessingException {
         HttpRequest request = client.requestBuilder(SLASH+USERS+SLASH+owner+SLASH+REPOS).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
         System.out.println(response);
         return ResponseMapper.fromResponse(response, new TypeReference<List<Repository>>() {});
+    }
+
+
+    public void createRepository(CreateRepositoryRequest request) throws ExecutionException, InterruptedException, JsonProcessingException {
+        HttpRequest req = client.requestBuilder(SLASH+USER+SLASH+REPOS)
+                .POST(HttpRequest.BodyPublishers.ofString(RequestMapper.toJson(request)))
+                .build();
+
+        HttpResponse<String> response= client.send(req, HttpResponse.BodyHandlers.ofString()).get();
+        System.out.println(response.body());
     }
 
 
