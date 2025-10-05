@@ -26,24 +26,23 @@ public class RepositoryAction {
     /**
      * Return repository data for a repository path
      *
-     * @param path
-     * @return
-     * @throws ExecutionException
-     * @throws InterruptedException
-     * @throws JsonProcessingException
+     * @param owner - owner o the repository
+     * @param name  - name of the repository
+     * @return Repository
      */
-    public Repository getRepository(final String path) throws ExecutionException, InterruptedException, JsonProcessingException {
-        HttpRequest request = client.requestBuilder(SLASH + REPOS + path).build();
+    public Repository getRepository(final String owner, final String name) throws ExecutionException, InterruptedException, JsonProcessingException {
+        HttpRequest request = client.requestBuilder(SLASH + REPOS + SLASH + owner + SLASH + name).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers
                 .ofString()
         ).get();
+        if (response.statusCode() != 200) throw new RuntimeException("Failed to get all exceptions.");
         return ResponseMapper.fromResponse(response, Repository.class);
     }
 
     public List<Repository> getAllRepositoriesByOwner(final String owner) throws ExecutionException, InterruptedException, JsonProcessingException {
         HttpRequest request = client.requestBuilder(SLASH + USERS + SLASH + owner + SLASH + REPOS).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
-        System.out.println(response);
+        if (response.statusCode() != 200) throw new RuntimeException("Failed to get all exceptions.");
         return ResponseMapper.fromResponse(response, new TypeReference<List<Repository>>() {
         });
     }
@@ -57,8 +56,8 @@ public class RepositoryAction {
         return ResponseMapper.fromResponse(response, Repository.class);
     }
 
-    public void deleteRepository(String path) throws ExecutionException, InterruptedException {
-        HttpRequest request = client.requestBuilder(SLASH + REPOS + SLASH + path)
+    public void deleteRepositoryForAuthenticatedUser(String owner, String name) throws ExecutionException, InterruptedException {
+        HttpRequest request = client.requestBuilder(SLASH + REPOS + SLASH + owner + SLASH + name)
                 .DELETE()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
