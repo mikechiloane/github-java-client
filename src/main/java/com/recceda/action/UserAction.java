@@ -25,8 +25,10 @@ public class UserAction {
     }
 
     public void starRepository(String path) throws ExecutionException, InterruptedException {
-        HttpRequest request = client.requestBuilder(SLASH + USER + SLASH + STARRED + path).build();
+        HttpRequest request = client.requestBuilder(SLASH + USER + SLASH + STARRED + path)
+                .PUT(HttpRequest.BodyPublishers.noBody())
+                .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
-        if (response.statusCode() != 204) throw new RuntimeException("Failed to star repo");
+        if (response.statusCode() != 204) throw new RuntimeException("Failed to star repo.");
     }
 }
