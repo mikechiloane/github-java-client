@@ -36,6 +36,6 @@ public class GithubClient implements Client {
     public HttpRequest.Builder requestBuilder(String path) {
         return HttpRequest.newBuilder()
                 .uri(URI.create(this.baseUrl+path))
-                .header("Authorization", WHITESPACE +BEARER+ this.token);
+                .header("Authorization", BEARER+WHITESPACE+ this.token);
     }
 }

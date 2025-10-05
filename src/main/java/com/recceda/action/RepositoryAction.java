@@ -47,7 +47,6 @@ public class RepositoryAction {
         return ResponseMapper.fromResponse(response, new TypeReference<List<Repository>>() {});
     }
 
-
     public void createRepository(CreateRepositoryRequest request) throws ExecutionException, InterruptedException, JsonProcessingException {
         HttpRequest req = client.requestBuilder(SLASH+USER+SLASH+REPOS)
                 .POST(HttpRequest.BodyPublishers.ofString(RequestMapper.toJson(request)))
@@ -55,6 +54,17 @@ public class RepositoryAction {
 
         HttpResponse<String> response= client.send(req, HttpResponse.BodyHandlers.ofString()).get();
         System.out.println(response.body());
+    }
+
+    public void deleteRepository(String path) throws ExecutionException, InterruptedException {
+        HttpRequest request = client.requestBuilder(SLASH+REPOS+SLASH+path)
+                .DELETE()
+                .build();
+
+        HttpResponse<String>  response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
+        if(response.statusCode() !=204){
+            throw new RuntimeException("Failed to delete repository");
+        }
     }
 
 

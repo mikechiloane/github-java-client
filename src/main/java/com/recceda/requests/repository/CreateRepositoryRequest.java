@@ -16,7 +16,7 @@ public class CreateRepositoryRequest {
     @JsonProperty("private")
     private boolean isPrivate;
     @JsonProperty("is_template")
-    private String isTemplate;
+    private boolean isTemplate;
 
     private boolean getPrivate() {
         return this.isPrivate;
