@@ -76,4 +76,14 @@ public class RepositoryAction {
         if (response.statusCode() != 201) throw new RuntimeException("Failed to create file.");
     }
 
+    public <T> T getFileContents(String owner, String repo, String path, Class<T> type) throws ExecutionException, InterruptedException, JsonProcessingException {
+        HttpRequest request = client.requestBuilder(SLASH + REPOS + SLASH + owner + SLASH + repo + SLASH + CONTENTS + SLASH + path)
+                .header("Accept", GITHUB_RAW_JSON_HEADER)
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
+        if (response.statusCode() != 200) throw new RuntimeException("Failed to get file contents.");
+
+        return ResponseMapper.fromResponse(response, type);
+    }
+
 }

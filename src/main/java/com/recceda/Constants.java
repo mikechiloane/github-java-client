@@ -17,4 +17,6 @@ public  final class Constants {
     public final static String SEMICOLON = ":";
     public final static String WHITESPACE = " ";
 
+    public final static String GITHUB_RAW_JSON_HEADER = "application/vnd.github.raw+json";
+
 }
