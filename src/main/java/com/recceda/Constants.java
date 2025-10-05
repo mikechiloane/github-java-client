@@ -9,6 +9,7 @@ public  final class Constants {
     public final static String USER = "user";
     public final static String BEARER = "Bearer";
     public final static String STARRED = "starred";
+    public final static String CONTENTS = "contents";
 
 
 

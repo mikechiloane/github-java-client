@@ -2,6 +2,7 @@ package com.recceda.action;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.recceda.elements.FileContentRequest;
 import com.recceda.elements.Repository;
 import com.recceda.http.Client;
 import com.recceda.mapper.RequestMapper;
@@ -66,5 +67,16 @@ public class RepositoryAction {
         }
     }
 
+    public void createFile(FileContentRequest fileContentRequest, String owner, String path) throws JsonProcessingException, ExecutionException, InterruptedException {
+        HttpRequest request = client.requestBuilder(SLASH+REPOS+SLASH+owner+SLASH+CONTENTS+SLASH+path)
+                .PUT(HttpRequest.BodyPublishers.ofString(RequestMapper.toJson(fileContentRequest)))
+                .build();
+
+        HttpResponse<String> response = client.send(request,HttpResponse.BodyHandlers.ofString())
+                .get();
+
+        System.out.println(response.body());
+
+    }
 
 }
