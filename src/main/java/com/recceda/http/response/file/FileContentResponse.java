@@ -15,4 +15,5 @@ public class FileContentResponse {
     private String sha;
     private int size;
     private String url;
+    private String content;
 }

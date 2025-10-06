@@ -2,9 +2,10 @@ package com.recceda.action;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.recceda.http.requests.file.FileContentRequest;
+import com.recceda.http.requests.file.CreateFileRequest;
 import com.recceda.elements.Repository;
 import com.recceda.http.Client;
+import com.recceda.http.response.file.FileContentResponse;
 import com.recceda.mapper.RequestMapper;
 import com.recceda.mapper.ResponseMapper;
 import com.recceda.http.requests.repository.CreateRepositoryRequest;
@@ -67,15 +68,26 @@ public class RepositoryAction {
         }
     }
 
-    public void createOrUpdateFile(FileContentRequest fileContentRequest, String owner, String repo, String path) throws JsonProcessingException, ExecutionException, InterruptedException {
+    public void createFile(CreateFileRequest createFileRequest, String owner, String repo, String path) throws JsonProcessingException, ExecutionException, InterruptedException {
         HttpRequest request = client.requestBuilder(SLASH + REPOS + SLASH + owner + SLASH + repo + SLASH + CONTENTS + SLASH + path)
-                .PUT(HttpRequest.BodyPublishers.ofString(RequestMapper.toJson(fileContentRequest)))
+                .PUT(HttpRequest.BodyPublishers.ofString(RequestMapper.toJson(createFileRequest)))
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString())
                 .get();
         System.out.println(response.statusCode());
         if (response.statusCode() != 201) throw new RuntimeException("Failed to create file.");
     }
+
+    public void updateFile(CreateFileRequest createFileRequest, String owner, String repo, String path) throws JsonProcessingException, ExecutionException, InterruptedException {
+        HttpRequest request = client.requestBuilder(SLASH + REPOS + SLASH + owner + SLASH + repo + SLASH + CONTENTS + SLASH + path)
+                .PUT(HttpRequest.BodyPublishers.ofString(RequestMapper.toJson(createFileRequest)))
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString())
+                .get();
+        System.out.println(response.statusCode());
+        if (response.statusCode() != 200) throw new RuntimeException("Failed to create file.");
+    }
+
 
     public <T> T getFileContents(String owner, String repo, String path, Class<T> type) throws ExecutionException, InterruptedException, JsonProcessingException {
         HttpRequest request = client.requestBuilder(SLASH + REPOS + SLASH + owner + SLASH + repo + SLASH + CONTENTS + SLASH + path)
@@ -88,14 +100,13 @@ public class RepositoryAction {
         return ResponseMapper.fromResponse(response, type);
     }
 
-    public etFileContents(String owner, String repo, String path) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public FileContentResponse getFileContents(String owner, String repo, String path) throws ExecutionException, InterruptedException, JsonProcessingException {
         HttpRequest request = client.requestBuilder(SLASH + REPOS + SLASH + owner + SLASH + repo + SLASH + CONTENTS + SLASH + path)
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
         System.out.println(response.body());
         if (response.statusCode() != 200) throw new RuntimeException("Failed to get file contents.");
-
-        return ResponseMapper.fromResponse(response, type);
+        return ResponseMapper.fromResponse(response, FileContentResponse.class);
     }
 
 }

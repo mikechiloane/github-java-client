@@ -9,12 +9,13 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class FileContentRequest {
+public class CreateFileRequest {
     private String message;
     private Committer committer;
     private String content;
+    private String sha;
 
-    public FileContentRequest(Object content, Committer committer, String message) throws JsonProcessingException {
+    public CreateFileRequest(Object content, Committer committer, String message) throws JsonProcessingException {
         this.content = ContentEncoder.encodeToBase64(RequestMapper.toJson(content));
         this.committer = committer;
         this.message = message;
