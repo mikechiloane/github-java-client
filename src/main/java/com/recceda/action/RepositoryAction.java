@@ -74,7 +74,6 @@ public class RepositoryAction {
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString())
                 .get();
-        System.out.println(response.statusCode());
         if (response.statusCode() != 201) throw new RuntimeException("Failed to create file.");
     }
 
