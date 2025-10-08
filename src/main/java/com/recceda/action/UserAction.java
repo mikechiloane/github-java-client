@@ -31,4 +31,12 @@ public class UserAction {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
         if (response.statusCode() != 204) throw new RuntimeException("Failed to star repo.");
     }
+
+    public void followUser(String username) throws ExecutionException, InterruptedException {
+        HttpRequest request = client.requestBuilder(SLASH + USER + FOLLOWING + SLASH + username)
+                .PUT(HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
+        if (response.statusCode() != 204) throw new RuntimeException("Failed to follow user " + username);
+    }
 }
