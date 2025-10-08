@@ -12,6 +12,9 @@ import lombok.Setter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Owner {
     private String login;
+    private String name;
     private String id;
     private String avatarUrl;
+    private String following;
+    private String followers;
 }

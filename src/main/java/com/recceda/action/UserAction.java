@@ -18,6 +18,13 @@ public class UserAction {
         this.client = client;
     }
 
+    public  Owner getUser(String username) throws ExecutionException, InterruptedException, JsonProcessingException {
+        HttpRequest request = client.requestBuilder(SLASH+USER+SLASH+username).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
+        if(response.statusCode() != 200) throw new RuntimeException("User not found");
+        return ResponseMapper.fromResponse(response, Owner.class);
+    }
+
     public Owner getAuthenticatedUser() throws ExecutionException, InterruptedException, JsonProcessingException {
         HttpRequest request = client.requestBuilder(SLASH + USER).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
