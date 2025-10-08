@@ -45,6 +45,6 @@ public class UserAction {
                 .DELETE()
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
-        if (response.statusCode() != 204) throw new RuntimeException("Failed to follow user " + username);
+        if (response.statusCode() != 204) throw new RuntimeException("Failed to unfollow user " + username);
     }
 }
