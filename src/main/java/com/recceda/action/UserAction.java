@@ -39,4 +39,12 @@ public class UserAction {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
         if (response.statusCode() != 204) throw new RuntimeException("Failed to follow user " + username);
     }
+
+    public void unfollowUser(String username) throws ExecutionException, InterruptedException {
+        HttpRequest request = client.requestBuilder(SLASH + USER + FOLLOWING + SLASH + username)
+                .DELETE()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
+        if (response.statusCode() != 204) throw new RuntimeException("Failed to follow user " + username);
+    }
 }
