@@ -2,13 +2,13 @@ package com.recceda.action;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.recceda.http.requests.file.CreateFileRequest;
 import com.recceda.elements.Repository;
 import com.recceda.http.Client;
+import com.recceda.http.requests.file.CreateFileRequest;
+import com.recceda.http.requests.repository.CreateRepositoryRequest;
 import com.recceda.http.response.file.FileContentResponse;
 import com.recceda.mapper.RequestMapper;
 import com.recceda.mapper.ResponseMapper;
-import com.recceda.http.requests.repository.CreateRepositoryRequest;
 
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -70,6 +70,15 @@ public class RepositoryAction {
 
     public void createFile(CreateFileRequest createFileRequest, String owner, String repo, String path) throws JsonProcessingException, ExecutionException, InterruptedException {
         HttpRequest request = client.requestBuilder(SLASH + REPOS + SLASH + owner + SLASH + repo + SLASH + CONTENTS + SLASH + path)
+                .PUT(HttpRequest.BodyPublishers.ofString(RequestMapper.toJson(createFileRequest)))
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString())
+                .get();
+        if (response.statusCode() != 201) throw new RuntimeException("Failed to create file.");
+    }
+
+    public void createFile(CreateFileRequest createFileRequest, Repository repository, String path) throws JsonProcessingException, ExecutionException, InterruptedException {
+        HttpRequest request = client.requestBuilder(SLASH + REPOS + SLASH + repository.getFullName() + SLASH + CONTENTS + SLASH + path)
                 .PUT(HttpRequest.BodyPublishers.ofString(RequestMapper.toJson(createFileRequest)))
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString())
