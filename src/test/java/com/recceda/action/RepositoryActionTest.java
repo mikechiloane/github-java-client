@@ -46,17 +46,10 @@ public class RepositoryActionTest extends TestCase {
         repositoryAction.deleteRepositoryForAuthenticatedUser(owner.getLogin(), repositoryName);
         var deletedRepository = repositoryAction.getRepository(owner.getLogin(), repositoryName);
         assertNull(deletedRepository);
-
-    }
-
-    public void testGetAllRepositoriesByOwner() {
-
-    }
-
-    public void testDeleteRepositoryForAuthenticatedUser() {
     }
 
     public void testCreateFile() {
+
     }
 
     public void testTestCreateFile() {
