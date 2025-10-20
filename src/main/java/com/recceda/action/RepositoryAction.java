@@ -37,14 +37,14 @@ public class RepositoryAction {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers
                 .ofString()
         ).get();
-        if (response.statusCode() != 200) throw new RuntimeException("Failed to get all exceptions.");
+        if (response.statusCode() != 200) return  null;
         return ResponseMapper.fromResponse(response, Repository.class);
     }
 
     public List<Repository> getAllRepositoriesByOwner(final String owner) throws ExecutionException, InterruptedException, JsonProcessingException {
         HttpRequest request = client.requestBuilder(SLASH + USERS + SLASH + owner + SLASH + REPOS).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
-        if (response.statusCode() != 200) throw new RuntimeException("Failed to get all exceptions.");
+        if (response.statusCode() != 200) List.of();
         return ResponseMapper.fromResponse(response, new TypeReference<List<Repository>>() {
         });
     }

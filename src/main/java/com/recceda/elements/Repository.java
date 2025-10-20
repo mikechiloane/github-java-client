@@ -16,6 +16,7 @@ import lombok.ToString;
 public class Repository {
     private String id;
     private String nodeId;
+    private String name;
     private String fullName;
     private boolean isPrivate;
     private Owner owner;
