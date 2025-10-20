@@ -20,4 +20,7 @@ public  final class Constants {
 
     public final static String GITHUB_RAW_JSON_HEADER = "application/vnd.github.raw+json";
 
+
+    public final static String PATCH = "PATCH";
+
 }

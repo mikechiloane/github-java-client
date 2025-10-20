@@ -3,6 +3,8 @@ package com.recceda.action;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.recceda.elements.Owner;
 import com.recceda.http.Client;
+import com.recceda.http.requests.user.UpdateUserRequest;
+import com.recceda.mapper.RequestMapper;
 import com.recceda.mapper.ResponseMapper;
 
 import java.net.http.HttpRequest;
@@ -37,6 +39,14 @@ public class UserAction {
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
         if (response.statusCode() != 204) throw new RuntimeException("Failed to star repo.");
+    }
+
+    public Owner updateAuthenticatedUser(UpdateUserRequest updateUserRequest) throws JsonProcessingException {
+        HttpRequest request = client.requestBuilder(SLASH+USER)
+                .method(PATCH, HttpRequest.BodyPublishers.ofString(RequestMapper.toJson(updateUserRequest)))
+                .build();
+
+        return
     }
 
     public void followUser(String username) throws ExecutionException, InterruptedException {

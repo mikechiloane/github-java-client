@@ -77,6 +77,15 @@ public class RepositoryAction {
         if (response.statusCode() != 201) throw new RuntimeException("Failed to create file.");
     }
 
+    /**
+     *
+     * @param createFileRequest - this is the request to save the file
+     * @param repository - the repository which the file belongs to
+     * @param path - the path where the repository is saved to and
+     * @throws JsonProcessingException
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
     public void createFile(CreateFileRequest createFileRequest, Repository repository, String path) throws JsonProcessingException, ExecutionException, InterruptedException {
         HttpRequest request = client.requestBuilder(SLASH + REPOS + SLASH + repository.getFullName() + SLASH + CONTENTS + SLASH + path)
                 .PUT(HttpRequest.BodyPublishers.ofString(RequestMapper.toJson(createFileRequest)))
