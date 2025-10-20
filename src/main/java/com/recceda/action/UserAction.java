@@ -41,12 +41,12 @@ public class UserAction {
         if (response.statusCode() != 204) throw new RuntimeException("Failed to star repo.");
     }
 
-    public Owner updateAuthenticatedUser(UpdateUserRequest updateUserRequest) throws JsonProcessingException {
+    public Owner updateAuthenticatedUser(UpdateUserRequest updateUserRequest) throws JsonProcessingException, ExecutionException, InterruptedException {
         HttpRequest request = client.requestBuilder(SLASH+USER)
                 .method(PATCH, HttpRequest.BodyPublishers.ofString(RequestMapper.toJson(updateUserRequest)))
                 .build();
-
-        return
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
+        return ResponseMapper.fromResponse(response, Owner.class);
     }
 
     public void followUser(String username) throws ExecutionException, InterruptedException {
