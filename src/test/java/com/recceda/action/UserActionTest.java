@@ -3,6 +3,7 @@ package com.recceda.action;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.recceda.elements.Owner;
 import com.recceda.http.github.GithubClient;
+import com.recceda.http.requests.user.UpdateUserRequest;
 import junit.framework.TestCase;
 
 import java.util.concurrent.ExecutionException;
@@ -11,7 +12,7 @@ public class UserActionTest extends TestCase {
 
     GithubClient githubClient;
     Owner user;
-    UserAction  userAction;
+    UserAction userAction;
 
     public void setUp() throws Exception {
         super.setUp();
@@ -24,6 +25,17 @@ public class UserActionTest extends TestCase {
         Owner owner = userAction.getAuthenticatedUser();
         assertNotNull(owner.getLogin());
         assertEquals(owner.getLogin(), this.user.getLogin());
+    }
+
+    public void testUpdateUser() throws Exception {
+        UpdateUserRequest request = UpdateUserRequest.builder()
+                .name("Enoch Sontonga")
+                .bio("Dedicated Software Engineer")
+                .build();
+        Owner owner = userAction.updateAuthenticatedUser(request);
+        assertNotNull(owner.getName());
+        assertEquals(owner.getName(), request.getName());
+
     }
 
 
