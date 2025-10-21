@@ -11,5 +11,6 @@ public final class ApiPaths {
     public static final String STARRED = "starred";
     public static final String CONTENTS = "contents";
     public static final String FOLLOWING = "following";
+    public static final String COMMITS = "commits";
     public static final String SLASH = "/";
 }
