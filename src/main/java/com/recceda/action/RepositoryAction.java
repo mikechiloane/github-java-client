@@ -37,7 +37,7 @@ public class RepositoryAction {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers
                 .ofString()
         ).get();
-        if (response.statusCode() != 200) return  null;
+        if (response.statusCode() != 200) return null;
         return ResponseMapper.fromResponse(response, Repository.class);
     }
 
@@ -80,8 +80,8 @@ public class RepositoryAction {
     /**
      *
      * @param createFileRequest - this is the request to save the file
-     * @param repository - the repository which the file belongs to
-     * @param path - the path where the repository is saved to and
+     * @param repository        - the repository which the file belongs to
+     * @param path              - the path where the repository is saved to and
      * @throws JsonProcessingException
      * @throws ExecutionException
      * @throws InterruptedException
@@ -110,7 +110,6 @@ public class RepositoryAction {
                 .header("Accept", GITHUB_RAW_JSON_HEADER)
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
-        System.out.println(response.body());
         if (response.statusCode() != 200) throw new RuntimeException("Failed to get file contents.");
 
         return ResponseMapper.fromResponse(response, type);
@@ -120,7 +119,6 @@ public class RepositoryAction {
         HttpRequest request = client.requestBuilder(SLASH + REPOS + SLASH + owner + SLASH + repo + SLASH + CONTENTS + SLASH + path)
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
-        System.out.println(response.body());
         if (response.statusCode() != 200) throw new RuntimeException("Failed to get file contents.");
         return ResponseMapper.fromResponse(response, FileContentResponse.class);
     }
