@@ -1,12 +1,12 @@
 package com.recceda.action;
 
 import com.recceda.elements.Committer;
+import com.recceda.elements.Owner;
 import com.recceda.http.github.GithubClient;
 import com.recceda.http.requests.file.CreateFileRequest;
 import com.recceda.http.requests.repository.CreateRepositoryRequest;
 import junit.framework.TestCase;
 
-import java.util.Base64;
 import java.util.UUID;
 
 public class RepositoryActionTest extends TestCase {
@@ -89,42 +89,23 @@ public class RepositoryActionTest extends TestCase {
         var createFileRequest = new CreateFileRequest(owner, Committer.builder().email(owner.getLogin()).name(repositoryName).build(), fileName);
         repositoryAction.createFile(createFileRequest, owner.getLogin(), repositoryName, fileName);
 
-        var fileContentsBeforeUpdate = repositoryAction.getFileContents(owner.getLogin(), repositoryName, fileName);
+        var fileContentsBeforeUpdate = repositoryAction.getFileContents(owner.getLogin(), repositoryName, fileName, Owner.class);
         assertNotNull(fileContentsBeforeUpdate);
-        assertEquals(fileName, fileContentsBeforeUpdate.getName());
+        assertEquals(owner.getLogin(), fileContentsBeforeUpdate.getLogin());
+
+        var fileSha = repositoryAction.getFileContents(owner.getLogin(), repositoryName, fileName).getSha();
+
+        owner.setName("New Name");
+        CreateFileRequest newUpdateReqeust = new CreateFileRequest(owner, Committer.builder().email(owner.getLogin()).name(repositoryName).build(), fileName);
+        newUpdateReqeust.setSha(fileSha);
+        repositoryAction.updateFile(newUpdateReqeust, owner.getLogin(), repositoryName, fileName);
+        var fileContentsAfterUpdate = repositoryAction.getFileContents(owner.getLogin(), repositoryName, fileName, Owner.class);
+        assertNotNull(fileContentsAfterUpdate);
+        assertEquals(owner.getName(), fileContentsAfterUpdate.getName());
 
         repositoryAction.deleteRepositoryForAuthenticatedUser(owner.getLogin(), repositoryName);
 
-
-
-
     }
 
-    public void testGetFileContents() throws Exception {
-//        var owner = userAction.getAuthenticatedUser();
-//        var repositoryName = UUID.randomUUID().toString();
-//        var fileName = UUID.randomUUID().toString() + ".txt";
-//        var fileContent = "Hello, world!";
-//        var encodedContent = Base64.getEncoder().encodeToString(fileContent.getBytes());
-//
-//        var createRepositoryRequest = CreateRepositoryRequest.builder()
-//                .name(repositoryName)
-//                .description("description")
-//                .isPrivate(false)
-//                .build();
-//        repositoryAction.createRepositoryForAuthenticatedUser(createRepositoryRequest);
-//
-//        var createFileRequest = CreateFileRequest.builder()
-//                .message("Create " + fileName)
-//                .content(encodedContent)
-//                .build();
-//
-//        repositoryAction.createFile(createFileRequest, owner.getLogin(), repositoryName, fileName);
-//
-//        var fileContents = repositoryAction.getFileContents(owner.getLogin(), repositoryName, fileName);
-//        assertNotNull(fileContents);
-//        assertEquals(fileContent, new String(Base64.getDecoder().decode(fileContents.getContent())));
-//
-//        repositoryAction.deleteRepositoryForAuthenticatedUser(owner.getLogin(), repositoryName);
-    }
+
 }
