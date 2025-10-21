@@ -86,16 +86,12 @@ public class RepositoryActionTest extends TestCase {
                 .isPrivate(false)
                 .build();
         repositoryAction.createRepositoryForAuthenticatedUser(createRepositoryRequest);
-
         var createFileRequest = new CreateFileRequest(owner, Committer.builder().email(owner.getLogin()).name(repositoryName).build(), fileName);
-
         repositoryAction.createFile(createFileRequest, owner.getLogin(), repositoryName, fileName);
 
         var fileContentsBeforeUpdate = repositoryAction.getFileContents(owner.getLogin(), repositoryName, fileName);
         assertNotNull(fileContentsBeforeUpdate);
         assertEquals(fileName, fileContentsBeforeUpdate.getName());
-
-
 
         repositoryAction.deleteRepositoryForAuthenticatedUser(owner.getLogin(), repositoryName);
 
