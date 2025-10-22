@@ -7,6 +7,7 @@ import com.recceda.http.Client;
 import com.recceda.http.HttpConstants;
 import com.recceda.http.requests.file.CreateFileRequest;
 import com.recceda.http.response.file.FileContentResponse;
+import com.recceda.http.response.file.FileCreationResponse;
 import com.recceda.mapper.RequestMapper;
 import com.recceda.mapper.ResponseMapper;
 
@@ -22,25 +23,26 @@ public class FileAction {
         this.client = client;
     }
 
-    public void createFile(CreateFileRequest createFileRequest, String owner, String repo, String path) throws JsonProcessingException, ExecutionException, InterruptedException {
-        executeCreateOrUpdate(createFileRequest, owner, repo, path, 201, "Failed to create file.");
+    public FileCreationResponse createFile(CreateFileRequest createFileRequest, String owner, String repo, String path) throws JsonProcessingException, ExecutionException, InterruptedException {
+        return executeCreateOrUpdate(createFileRequest, owner, repo, path, 201, "Failed to create file.");
     }
 
-    public void createFile(CreateFileRequest createFileRequest, Repository repository, String path) throws JsonProcessingException, ExecutionException, InterruptedException {
-        createFile(createFileRequest, repository.getOwner().getLogin(), repository.getName(), path);
+    public FileCreationResponse createFile(CreateFileRequest createFileRequest, Repository repository, String path) throws JsonProcessingException, ExecutionException, InterruptedException {
+        return createFile(createFileRequest, repository.getOwner().getLogin(), repository.getName(), path);
     }
 
-    public void updateFile(CreateFileRequest createFileRequest, String owner, String repo, String path) throws JsonProcessingException, ExecutionException, InterruptedException {
-        executeCreateOrUpdate(createFileRequest, owner, repo, path, 200, "Failed to update file.");
+    public FileCreationResponse updateFile(CreateFileRequest createFileRequest, String owner, String repo, String path) throws JsonProcessingException, ExecutionException, InterruptedException {
+        return executeCreateOrUpdate(createFileRequest, owner, repo, path, 200, "Failed to update file.");
     }
 
-    private void executeCreateOrUpdate(CreateFileRequest createFileRequest, String owner, String repo, String path, int expectedStatusCode, String errorMessage) throws JsonProcessingException, ExecutionException, InterruptedException {
+    private FileCreationResponse executeCreateOrUpdate(CreateFileRequest createFileRequest, String owner, String repo, String path, int expectedStatusCode, String errorMessage) throws JsonProcessingException, ExecutionException, InterruptedException {
         HttpRequest request = client.requestBuilder(buildContentsPath(owner, repo, path))
                 .PUT(HttpRequest.BodyPublishers.ofString(RequestMapper.toJson(createFileRequest)))
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString())
                 .get();
         if (response.statusCode() != expectedStatusCode) throw new RuntimeException(errorMessage);
+        return ResponseMapper.fromResponse(response, FileCreationResponse.class);
     }
 
 

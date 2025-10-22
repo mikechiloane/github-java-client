@@ -42,6 +42,15 @@ public class UserAction {
         if (response.statusCode() != 204) throw new RuntimeException("Failed to star repo.");
     }
 
+    public void unstarRepository(String owner, String repo) throws ExecutionException, InterruptedException {
+        String path = ApiPaths.SLASH + ApiPaths.USER + ApiPaths.SLASH + ApiPaths.STARRED + ApiPaths.SLASH + owner + ApiPaths.SLASH + repo;
+        HttpRequest request = client.requestBuilder(path)
+                .DELETE()
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
+        if (response.statusCode() != 204) throw new RuntimeException("Failed to unstar repo.");
+    }
+
     public Owner updateAuthenticatedUser(UpdateUserRequest updateUserRequest) throws JsonProcessingException, ExecutionException, InterruptedException {
         HttpRequest request = client.requestBuilder(ApiPaths.SLASH + ApiPaths.USER)
                 .method(HttpConstants.PATCH, HttpRequest.BodyPublishers.ofString(RequestMapper.toJson(updateUserRequest)))
