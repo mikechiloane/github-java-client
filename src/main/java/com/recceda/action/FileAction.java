@@ -56,6 +56,16 @@ public class FileAction {
         return ResponseMapper.fromResponse(response, type);
     }
 
+    public <T> T getFileContents(Repository repository, String path, Class<T> type) throws ExecutionException, InterruptedException, JsonProcessingException {
+        HttpRequest request = client.requestBuilder(buildContentsPath(repository.getOwner().getLogin(), repository.getName(), path))
+                .header("Accept", HttpConstants.GITHUB_RAW_JSON_HEADER)
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
+        if (response.statusCode() != 200) throw new RuntimeException("Failed to get file contents.");
+
+        return ResponseMapper.fromResponse(response, type);
+    }
+
     public FileContentResponse getFileContents(String owner, String repo, String path) throws ExecutionException, InterruptedException, JsonProcessingException {
         HttpRequest request = client.requestBuilder(buildContentsPath(owner, repo, path))
                 .build();
