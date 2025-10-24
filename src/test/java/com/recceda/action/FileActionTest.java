@@ -4,6 +4,7 @@ import com.recceda.elements.Committer;
 import com.recceda.elements.Owner;
 import com.recceda.http.github.GithubClient;
 import com.recceda.http.requests.file.CreateFileRequest;
+import com.recceda.http.requests.file.DeleteFileRequest;
 import com.recceda.http.requests.repository.CreateRepositoryRequest;
 import junit.framework.TestCase;
 
@@ -79,6 +80,41 @@ public class FileActionTest extends TestCase {
 
         repositoryAction.deleteRepositoryForAuthenticatedUser(owner.getLogin(), repositoryName);
 
+    }
+
+    public void testDeleteFile() throws Exception {
+        var owner = userAction.getAuthenticatedUser();
+        var repositoryName = UUID.randomUUID().toString();
+        var fileName = UUID.randomUUID().toString() + ".txt";
+
+        var createRepositoryRequest = CreateRepositoryRequest.builder()
+                .name(repositoryName)
+                .description("description")
+                .isPrivate(false)
+                .build();
+        repositoryAction.createRepositoryForAuthenticatedUser(createRepositoryRequest);
+
+        var createFileRequest = new CreateFileRequest(owner, Committer.builder().email(owner.getLogin()).name(repositoryName).build(), fileName);
+        var fileCreationResponse = fileAction.createFile(createFileRequest, owner.getLogin(), repositoryName, fileName);
+
+        var fileSha = fileCreationResponse.getContent().getSha();
+
+        var deleteFileRequest = DeleteFileRequest.builder()
+                .message("Deleting test file")
+                .sha(fileSha)
+                .committer(Committer.builder().email(owner.getLogin()).name(owner.getLogin()).build())
+                .build();
+
+        fileAction.deleteFile(deleteFileRequest, owner.getLogin(), repositoryName, fileName);
+
+        try {
+            fileAction.getFileContents(owner.getLogin(), repositoryName, fileName);
+            fail("Expected RuntimeException for file not found");
+        } catch (RuntimeException e) {
+            assertTrue(e.getMessage().contains("Failed to get file contents."));
+        }
+
+        repositoryAction.deleteRepositoryForAuthenticatedUser(owner.getLogin(), repositoryName);
     }
 
 

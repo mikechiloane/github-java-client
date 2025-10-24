@@ -6,6 +6,7 @@ import com.recceda.http.ApiPaths;
 import com.recceda.http.Client;
 import com.recceda.http.HttpConstants;
 import com.recceda.http.requests.file.CreateFileRequest;
+import com.recceda.http.requests.file.DeleteFileRequest;
 import com.recceda.http.response.file.FileContentResponse;
 import com.recceda.http.response.file.FileCreationResponse;
 import com.recceda.mapper.RequestMapper;
@@ -35,6 +36,15 @@ public class FileAction {
         return executeCreateOrUpdate(createFileRequest, owner, repo, path, 200, "Failed to update file.");
     }
 
+    public void deleteFile(DeleteFileRequest deleteFileRequest, String owner, String repo, String path) throws ExecutionException, InterruptedException, JsonProcessingException {
+        HttpRequest request = client.requestBuilder(buildContentsPath(owner, repo, path))
+                .method("DELETE", HttpRequest.BodyPublishers.ofString(RequestMapper.toJson(deleteFileRequest)))
+                .build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString())
+                .get();
+        if (response.statusCode() != 200) throw new RuntimeException("Failed to delete file.");
+    }
+
     private FileCreationResponse executeCreateOrUpdate(CreateFileRequest createFileRequest, String owner, String repo, String path, int expectedStatusCode, String errorMessage) throws JsonProcessingException, ExecutionException, InterruptedException {
         HttpRequest request = client.requestBuilder(buildContentsPath(owner, repo, path))
                 .PUT(HttpRequest.BodyPublishers.ofString(RequestMapper.toJson(createFileRequest)))
@@ -48,16 +58,6 @@ public class FileAction {
 
     public <T> T getFileContents(String owner, String repo, String path, Class<T> type) throws ExecutionException, InterruptedException, JsonProcessingException {
         HttpRequest request = client.requestBuilder(buildContentsPath(owner, repo, path))
-                .header("Accept", HttpConstants.GITHUB_RAW_JSON_HEADER)
-                .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
-        if (response.statusCode() != 200) throw new RuntimeException("Failed to get file contents.");
-
-        return ResponseMapper.fromResponse(response, type);
-    }
-
-    public <T> T getFileContents(Repository repository, String path, Class<T> type) throws ExecutionException, InterruptedException, JsonProcessingException {
-        HttpRequest request = client.requestBuilder(buildContentsPath(repository.getOwner().getLogin(), repository.getName(), path))
                 .header("Accept", HttpConstants.GITHUB_RAW_JSON_HEADER)
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
