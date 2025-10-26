@@ -48,6 +48,9 @@
               <version>1.18.38</version>
             </path>
           </annotationProcessorPaths>
+            <testExcludes>
+                <exclude>com/recceda/action/**</exclude>
+            </testExcludes>
         </configuration>
       </plugin>
     </plugins>
