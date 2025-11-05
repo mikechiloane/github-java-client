@@ -27,7 +27,7 @@ public class UserActionTest extends TestCase {
     }
 
     public void testGetFollowers() throws ExecutionException, InterruptedException, JsonProcessingException {
-        List<String> followers = userAction.getFollowersForUser("mikechiloane");
+        List<Owner> followers = userAction.getFollowersForUser("mikechiloane");
         assertTrue(followers.size()>0);
     }
 

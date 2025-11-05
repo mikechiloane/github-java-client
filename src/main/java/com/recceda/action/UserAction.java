@@ -76,7 +76,7 @@ public class UserAction {
         if (response.statusCode() != 204) throw new RuntimeException("Failed to unfollow user " + username);
     }
 
-    public List<String> getFollowersForUser(String username) throws ExecutionException, InterruptedException, JsonProcessingException {
+    public List<Owner> getFollowersForUser(String username) throws ExecutionException, InterruptedException, JsonProcessingException {
 
         HttpRequest request = client.requestBuilder(ApiPaths.SLASH+ApiPaths.USERS+ ApiPaths.SLASH+username+ApiPaths.SLASH+ApiPaths.FOLLOWERS).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
