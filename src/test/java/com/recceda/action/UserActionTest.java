@@ -7,6 +7,7 @@ import com.recceda.http.requests.repository.CreateRepositoryRequest;
 import com.recceda.http.requests.user.UpdateUserRequest;
 import junit.framework.TestCase;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -25,10 +26,9 @@ public class UserActionTest extends TestCase {
         user = userAction.getAuthenticatedUser();
     }
 
-    public void testGetUser() throws ExecutionException, InterruptedException, JsonProcessingException {
-        Owner owner = userAction.getAuthenticatedUser();
-        assertNotNull(owner.getLogin());
-        assertEquals(owner.getLogin(), this.user.getLogin());
+    public void testGetFollowers() throws ExecutionException, InterruptedException, JsonProcessingException {
+        List<String> followers = userAction.getFollowersForUser("mikechiloane");
+        assertTrue(followers.size()>0);
     }
 
     public void testUpdateUser() throws Exception {
