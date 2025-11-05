@@ -22,7 +22,7 @@ public class CommitAction {
         HttpRequest request = client.requestBuilder(path).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
         if (response.statusCode() != 200) {
-            throw new RuntimeException("Failed to get commit");
+            return null;
         }
         return ResponseMapper.fromResponse(response, Commit.class);
     }

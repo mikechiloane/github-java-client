@@ -24,54 +24,70 @@ public class FileAction {
         this.client = client;
     }
 
-    public FileCreationResponse createFile(CreateFileRequest createFileRequest, String owner, String repo, String path) throws JsonProcessingException, ExecutionException, InterruptedException {
-        return executeCreateOrUpdate(createFileRequest, owner, repo, path, 201, "Failed to create file.");
+    public FileCreationResponse createFile(CreateFileRequest createFileRequest, String owner, String repo, String path) {
+        return executeCreateOrUpdate(createFileRequest, owner, repo, path, 201);
     }
 
-    public FileCreationResponse createFile(CreateFileRequest createFileRequest, Repository repository, String path) throws JsonProcessingException, ExecutionException, InterruptedException {
+    public FileCreationResponse createFile(CreateFileRequest createFileRequest, Repository repository, String path) {
         return createFile(createFileRequest, repository.getOwner().getLogin(), repository.getName(), path);
     }
 
-    public FileCreationResponse updateFile(CreateFileRequest createFileRequest, String owner, String repo, String path) throws JsonProcessingException, ExecutionException, InterruptedException {
-        return executeCreateOrUpdate(createFileRequest, owner, repo, path, 200, "Failed to update file.");
+    public FileCreationResponse updateFile(CreateFileRequest createFileRequest, String owner, String repo, String path) {
+        return executeCreateOrUpdate(createFileRequest, owner, repo, path, 200);
     }
 
-    public void deleteFile(DeleteFileRequest deleteFileRequest, String owner, String repo, String path) throws ExecutionException, InterruptedException, JsonProcessingException {
-        HttpRequest request = client.requestBuilder(buildContentsPath(owner, repo, path))
-                .method("DELETE", HttpRequest.BodyPublishers.ofString(RequestMapper.toJson(deleteFileRequest)))
-                .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString())
-                .get();
-        if (response.statusCode() != 200) throw new RuntimeException("Failed to delete file.");
+    public boolean deleteFile(DeleteFileRequest deleteFileRequest, String owner, String repo, String path) {
+        try {
+            HttpRequest request = client.requestBuilder(buildContentsPath(owner, repo, path))
+                    .method("DELETE", HttpRequest.BodyPublishers.ofString(RequestMapper.toJson(deleteFileRequest)))
+                    .build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString())
+                    .get();
+            return response.statusCode() == 200;
+        } catch (JsonProcessingException | ExecutionException | InterruptedException e) {
+            return false;
+        }
     }
 
-    private FileCreationResponse executeCreateOrUpdate(CreateFileRequest createFileRequest, String owner, String repo, String path, int expectedStatusCode, String errorMessage) throws JsonProcessingException, ExecutionException, InterruptedException {
-        HttpRequest request = client.requestBuilder(buildContentsPath(owner, repo, path))
-                .PUT(HttpRequest.BodyPublishers.ofString(RequestMapper.toJson(createFileRequest)))
-                .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString())
-                .get();
-        if (response.statusCode() != expectedStatusCode) throw new RuntimeException(errorMessage);
-        return ResponseMapper.fromResponse(response, FileCreationResponse.class);
+    private FileCreationResponse executeCreateOrUpdate(CreateFileRequest createFileRequest, String owner, String repo, String path, int expectedStatusCode) {
+        try {
+            HttpRequest request = client.requestBuilder(buildContentsPath(owner, repo, path))
+                    .PUT(HttpRequest.BodyPublishers.ofString(RequestMapper.toJson(createFileRequest)))
+                    .build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString())
+                    .get();
+            if (response.statusCode() != expectedStatusCode) return null;
+            return ResponseMapper.fromResponse(response, FileCreationResponse.class);
+        } catch (JsonProcessingException | ExecutionException | InterruptedException e) {
+            return null;
+        }
     }
 
 
-    public <T> T getFileContents(String owner, String repo, String path, Class<T> type) throws ExecutionException, InterruptedException, JsonProcessingException {
-        HttpRequest request = client.requestBuilder(buildContentsPath(owner, repo, path))
-                .header("Accept", HttpConstants.GITHUB_RAW_JSON_HEADER)
-                .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
-        if (response.statusCode() != 200) throw new RuntimeException("Failed to get file contents.");
+    public <T> T getFileContents(String owner, String repo, String path, Class<T> type) {
+        try {
+            HttpRequest request = client.requestBuilder(buildContentsPath(owner, repo, path))
+                    .header("Accept", HttpConstants.GITHUB_RAW_JSON_HEADER)
+                    .build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
+            if (response.statusCode() != 200) return null;
 
-        return ResponseMapper.fromResponse(response, type);
+            return ResponseMapper.fromResponse(response, type);
+        } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
+            return null;
+        }
     }
 
-    public FileContentResponse getFileContents(String owner, String repo, String path) throws ExecutionException, InterruptedException, JsonProcessingException {
-        HttpRequest request = client.requestBuilder(buildContentsPath(owner, repo, path))
-                .build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
-        if (response.statusCode() != 200) throw new RuntimeException("Failed to get file contents.");
-        return ResponseMapper.fromResponse(response, FileContentResponse.class);
+    public FileContentResponse getFileContents(String owner, String repo, String path) {
+        try {
+            HttpRequest request = client.requestBuilder(buildContentsPath(owner, repo, path))
+                    .build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
+            if (response.statusCode() != 200) return null;
+            return ResponseMapper.fromResponse(response, FileContentResponse.class);
+        } catch (ExecutionException | InterruptedException | JsonProcessingException e) {
+            return null;
+        }
     }
 
     private String buildContentsPath(String owner, String repo, String path) {

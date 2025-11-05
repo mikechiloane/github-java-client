@@ -51,7 +51,7 @@ public class RepositoryAction {
                 .POST(HttpRequest.BodyPublishers.ofString(RequestMapper.toJson(request)))
                 .build();
         HttpResponse<String> response = client.send(req, HttpResponse.BodyHandlers.ofString()).get();
-        if (response.statusCode() != 201) throw new RuntimeException("Failed to create repository.");
+        if (response.statusCode() != 201) return null;
         return ResponseMapper.fromResponse(response, Repository.class);
     }
 
