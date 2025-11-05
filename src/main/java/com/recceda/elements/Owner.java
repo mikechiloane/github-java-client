@@ -17,6 +17,7 @@ public class Owner {
     private String name;
     private String id;
     private String avatarUrl;
-    private String following;
-    private String followers;
+    private int following;
+    private String followersUrl;
+    private int followers;
 }

@@ -22,6 +22,12 @@ public class RepositoryActionTest extends TestCase {
         userAction = new UserAction(githubClient);
     }
 
+    public void testGetFollowers() throws  Exception{
+        var owner = userAction.getUser("mikechiloane");
+        assertEquals("mikechiloane", owner.getLogin());
+        String[] followers = owner.getFollowers();
+        System.out.println("Followers : " + followers);
+    }
 
     public void testGetRepository() throws Exception {
         var owner = userAction.getAuthenticatedUser();
