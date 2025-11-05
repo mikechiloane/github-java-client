@@ -23,7 +23,7 @@ public class UserAction {
     public Owner getUser(String username) throws ExecutionException, InterruptedException, JsonProcessingException {
         HttpRequest request = client.requestBuilder(ApiPaths.SLASH + ApiPaths.USERS + ApiPaths.SLASH + username).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
-        if (response.statusCode() != 200) throw new RuntimeException("User not found");
+        if (response.statusCode() != 200) return null;
         return ResponseMapper.fromResponse(response, Owner.class);
     }
 
