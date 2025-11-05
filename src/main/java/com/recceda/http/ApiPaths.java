@@ -13,4 +13,5 @@ public final class ApiPaths {
     public static final String FOLLOWING = "following";
     public static final String COMMITS = "commits";
     public static final String SLASH = "/";
+    public static final String FOLLOWERS = "followers";
 }

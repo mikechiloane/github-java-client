@@ -11,6 +11,7 @@ import com.recceda.mapper.ResponseMapper;
 
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class UserAction {
@@ -73,5 +74,14 @@ public class UserAction {
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
         if (response.statusCode() != 204) throw new RuntimeException("Failed to unfollow user " + username);
+    }
+
+    public List<String> getFollowersForUser(String username) throws ExecutionException, InterruptedException, JsonProcessingException {
+
+        HttpRequest request = client.requestBuilder(ApiPaths.SLASH+ApiPaths.USERS+ ApiPaths.SLASH+username+ApiPaths.SLASH+ApiPaths.FOLLOWERS).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
+        if (response.statusCode() != 200) return null;
+        return ResponseMapper.fromResponse(response, List.class);
+
     }
 }
