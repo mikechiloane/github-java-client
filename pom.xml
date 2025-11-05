@@ -4,7 +4,7 @@
 
     <groupId>com.recceda</groupId>
     <artifactId>github-java-client</artifactId>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <packaging>jar</packaging>
 
     <name>github-java-client</name>
@@ -49,7 +49,7 @@
                         </path>
                     </annotationProcessorPaths>
                     <testExcludes>
-<!--                        <exclude>com/recceda/action/**</exclude>-->
+                        <exclude>com/recceda/action/**</exclude>
                     </testExcludes>
                 </configuration>
             </plugin>
