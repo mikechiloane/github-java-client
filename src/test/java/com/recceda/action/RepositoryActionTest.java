@@ -1,9 +1,11 @@
 package com.recceda.action;
 
+import com.recceda.elements.Repository;
 import com.recceda.http.github.GithubClient;
 import com.recceda.http.requests.repository.CreateRepositoryRequest;
 import junit.framework.TestCase;
 
+import java.util.List;
 import java.util.UUID;
 
 public class RepositoryActionTest extends TestCase {
@@ -20,9 +22,10 @@ public class RepositoryActionTest extends TestCase {
         userAction = new UserAction(githubClient);
     }
 
+
     public void testGetRepository() throws Exception {
         var owner = userAction.getAuthenticatedUser();
-        var repositories = repositoryAction.getAllRepositoriesByOwner(owner.getLogin());
+        List<Repository> repositories = repositoryAction.getAllRepositoriesByOwner(owner.getLogin());
         assertNotNull(repositories);
         if (repositories.isEmpty()) {
             return;
@@ -42,7 +45,7 @@ public class RepositoryActionTest extends TestCase {
                 .description("description")
                 .isPrivate(false)
                 .build();
-        var createdRepository = repositoryAction.createRepositoryForAuthenticatedUser(repository);
+        Repository createdRepository = repositoryAction.createRepositoryForAuthenticatedUser(repository);
         assertNotNull(createdRepository);
         assertEquals(createdRepository.getName(), repositoryName);
         repositoryAction.deleteRepositoryForAuthenticatedUser(owner.getLogin(), repositoryName);
