@@ -2,6 +2,7 @@ package com.recceda.action;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.recceda.elements.Owner;
 import com.recceda.elements.Repository;
 import com.recceda.http.ApiPaths;
 import com.recceda.http.Client;
@@ -63,5 +64,13 @@ public class RepositoryAction {
         if (response.statusCode() != 204) {
             throw new RuntimeException("Failed to delete repository");
         }
+    }
+
+    public List<Owner> getStargazersFor(String owner, String repo) throws JsonProcessingException, ExecutionException, InterruptedException {
+        HttpRequest request = client.requestBuilder(ApiPaths.SLASH + ApiPaths.REPOS + ApiPaths.SLASH + owner + ApiPaths.SLASH + repo + ApiPaths.SLASH + ApiPaths.STARGAZERS).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
+        if (response.statusCode() != 200) return null;
+        return ResponseMapper.fromResponse(response, new TypeReference<>() {
+        });
     }
 }
