@@ -81,7 +81,7 @@ public class UserAction {
         HttpRequest request = client.requestBuilder(ApiPaths.SLASH+ApiPaths.USERS+ ApiPaths.SLASH+username+ApiPaths.SLASH+ApiPaths.FOLLOWERS).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
         if (response.statusCode() != 200) return null;
-        return ResponseMapper.fromResponse(response, List.class);
+        return List.of(ResponseMapper.fromResponse(response, Owner[].class));
 
     }
 }
