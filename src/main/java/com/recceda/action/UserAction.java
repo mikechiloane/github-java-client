@@ -82,6 +82,12 @@ public class UserAction {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
         if (response.statusCode() != 200) return null;
         return List.of(ResponseMapper.fromResponse(response, Owner[].class));
+    }
 
+    public List<Owner> getFollowingForUser(String username) throws ExecutionException, InterruptedException, JsonProcessingException {
+        HttpRequest request = client.requestBuilder(ApiPaths.SLASH + ApiPaths.USERS + ApiPaths.SLASH + username + ApiPaths.SLASH + ApiPaths.FOLLOWING).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
+        if (response.statusCode() != 200) return null;
+        return List.of(ResponseMapper.fromResponse(response, Owner[].class));
     }
 }
