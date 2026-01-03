@@ -4,11 +4,14 @@ import com.recceda.elements.Committer;
 import com.recceda.http.github.GithubClient;
 import com.recceda.http.requests.file.CreateFileRequest;
 import com.recceda.http.requests.repository.CreateRepositoryRequest;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
-public class CommitActionTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+class CommitActionTest {
 
     private GithubClient githubClient;
     private RepositoryAction repositoryAction;
@@ -16,8 +19,8 @@ public class CommitActionTest extends TestCase {
     private FileAction fileAction;
     private CommitAction commitAction;
 
-    public void setUp() throws Exception {
-        super.setUp();
+    @BeforeEach
+    void setUp() throws Exception {
         githubClient = new GithubClient(System.getenv("API_TOKEN"));
         repositoryAction = new RepositoryAction(githubClient);
         userAction = new UserAction(githubClient);
@@ -25,7 +28,8 @@ public class CommitActionTest extends TestCase {
         commitAction = new CommitAction(githubClient);
     }
 
-    public void testGetCommit() throws Exception {
+    @Test
+    void testGetCommit() throws Exception {
         var owner = userAction.getAuthenticatedUser();
         var repositoryName = UUID.randomUUID().toString();
         var fileName = UUID.randomUUID().toString() + ".txt";

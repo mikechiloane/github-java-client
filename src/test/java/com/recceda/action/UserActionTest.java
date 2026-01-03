@@ -5,33 +5,38 @@ import com.recceda.elements.Owner;
 import com.recceda.http.github.GithubClient;
 import com.recceda.http.requests.repository.CreateRepositoryRequest;
 import com.recceda.http.requests.user.UpdateUserRequest;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
-public class UserActionTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+class UserActionTest {
 
     GithubClient githubClient;
     Owner user;
     UserAction userAction;
     RepositoryAction repositoryAction;
 
-    public void setUp() throws Exception {
-        super.setUp();
+    @BeforeEach
+    void setUp() throws Exception {
         githubClient = new GithubClient(System.getenv("API_TOKEN"));
         userAction = new UserAction(githubClient);
         repositoryAction = new RepositoryAction(githubClient);
         user = userAction.getAuthenticatedUser();
     }
 
-    public void testGetFollowers() throws ExecutionException, InterruptedException, JsonProcessingException {
+    @Test
+    void testGetFollowers() throws ExecutionException, InterruptedException, JsonProcessingException {
         List<Owner> followers = userAction.getFollowersForUser("mikechiloane");
         assertTrue(followers.size()>0);
     }
 
-    public void testUpdateUser() throws Exception {
+    @Test
+    void testUpdateUser() throws Exception {
         UpdateUserRequest request = UpdateUserRequest.builder()
                 .name("Enoch Sontonga")
                 .bio("Dedicated Software Engineer")
@@ -43,7 +48,8 @@ public class UserActionTest extends TestCase {
     }
 
 
-    public void testStarRepository() throws Exception {
+    @Test
+    void testStarRepository() throws Exception {
         var owner = userAction.getAuthenticatedUser();
         var repositoryName = UUID.randomUUID().toString();
         var repository = CreateRepositoryRequest.builder()
@@ -58,11 +64,13 @@ public class UserActionTest extends TestCase {
         repositoryAction.deleteRepositoryForAuthenticatedUser(owner.getLogin(), repositoryName);
     }
 
-    public void testFollowUser() throws ExecutionException, InterruptedException {
+    @Test
+    void testFollowUser() throws ExecutionException, InterruptedException {
         userAction.followUser("google");
     }
 
-    public void testUnfollowUser() throws ExecutionException, InterruptedException {
+    @Test
+    void testUnfollowUser() throws ExecutionException, InterruptedException {
         userAction.unfollowUser("google");
     }
 }

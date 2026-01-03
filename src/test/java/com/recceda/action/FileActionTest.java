@@ -6,11 +6,14 @@ import com.recceda.http.github.GithubClient;
 import com.recceda.http.requests.file.CreateFileRequest;
 import com.recceda.http.requests.file.DeleteFileRequest;
 import com.recceda.http.requests.repository.CreateRepositoryRequest;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
-public class FileActionTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.*;
+
+class FileActionTest {
 
     private GithubClient githubClient;
     private RepositoryAction repositoryAction;
@@ -18,15 +21,16 @@ public class FileActionTest extends TestCase {
     private FileAction fileAction;
 
 
-    public void setUp() throws Exception {
-        super.setUp();
+    @BeforeEach
+    void setUp() throws Exception {
         githubClient = new GithubClient(System.getenv("API_TOKEN"));
         repositoryAction = new RepositoryAction(githubClient);
         userAction = new UserAction(githubClient);
         fileAction = new FileAction(githubClient);
     }
 
-    public void testCreateFile() throws Exception {
+    @Test
+    void testCreateFile() throws Exception {
         var owner = userAction.getAuthenticatedUser();
         var repositoryName = UUID.randomUUID().toString();
         var fileName = UUID.randomUUID().toString() + ".txt";
@@ -50,7 +54,8 @@ public class FileActionTest extends TestCase {
         repositoryAction.deleteRepositoryForAuthenticatedUser(owner.getLogin(), repositoryName);
     }
 
-    public void testUpdateFile() throws Exception {
+    @Test
+    void testUpdateFile() throws Exception {
         var owner = userAction.getAuthenticatedUser();
         var repositoryName = UUID.randomUUID().toString();
         var fileName = UUID.randomUUID().toString() + ".txt";
@@ -82,7 +87,8 @@ public class FileActionTest extends TestCase {
 
     }
 
-    public void testDeleteFile() throws Exception {
+    @Test
+    void testDeleteFile() throws Exception {
         var owner = userAction.getAuthenticatedUser();
         var repositoryName = UUID.randomUUID().toString();
         var fileName = UUID.randomUUID().toString() + ".txt";
