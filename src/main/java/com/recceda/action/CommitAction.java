@@ -5,15 +5,17 @@ import com.recceda.elements.Commit;
 import com.recceda.http.ApiPaths;
 import com.recceda.http.Client;
 import com.recceda.mapper.ResponseMapper;
+import lombok.Getter;
 
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.concurrent.ExecutionException;
 
 public class CommitAction {
+    @Getter
     private final Client client;
 
-    public CommitAction(Client client){
+    public CommitAction(Client client) {
         this.client = client;
     }
 

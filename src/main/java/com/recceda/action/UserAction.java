@@ -8,6 +8,7 @@ import com.recceda.http.HttpConstants;
 import com.recceda.http.requests.user.UpdateUserRequest;
 import com.recceda.mapper.RequestMapper;
 import com.recceda.mapper.ResponseMapper;
+import lombok.Getter;
 
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class UserAction {
+    @Getter
     private final Client client;
 
     public UserAction(Client client) {

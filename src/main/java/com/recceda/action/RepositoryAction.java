@@ -9,7 +9,7 @@ import com.recceda.http.Client;
 import com.recceda.http.requests.repository.CreateRepositoryRequest;
 import com.recceda.mapper.RequestMapper;
 import com.recceda.mapper.ResponseMapper;
-import lombok.extern.slf4j.Slf4j;
+import lombok.Getter;
 
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -18,9 +18,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
 public class RepositoryAction {
+    @Getter
     private final Client client;
     private final Logger logger = Logger.getLogger(RepositoryAction.class.getName());
-
 
 
     public RepositoryAction(Client client) {
@@ -66,7 +66,7 @@ public class RepositoryAction {
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
         if (response.statusCode() != 204) {
-           logger.info(response.body());
+            logger.info(response.body());
         }
     }
 

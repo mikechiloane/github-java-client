@@ -11,6 +11,7 @@ import com.recceda.http.response.file.FileContentResponse;
 import com.recceda.http.response.file.FileCreationResponse;
 import com.recceda.mapper.RequestMapper;
 import com.recceda.mapper.ResponseMapper;
+import lombok.Getter;
 
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -18,6 +19,7 @@ import java.util.concurrent.ExecutionException;
 
 public class FileAction {
 
+    @Getter
     private final Client client;
 
     public FileAction(Client client) {
