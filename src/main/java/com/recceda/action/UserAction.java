@@ -80,7 +80,7 @@ public class UserAction {
 
     public List<Owner> getFollowersForUser(String username) throws ExecutionException, InterruptedException, JsonProcessingException {
 
-        HttpRequest request = client.requestBuilder(ApiPaths.SLASH+ApiPaths.USERS+ ApiPaths.SLASH+username+ApiPaths.SLASH+ApiPaths.FOLLOWERS).build();
+        HttpRequest request = client.requestBuilder(ApiPaths.SLASH + ApiPaths.USERS + ApiPaths.SLASH + username + ApiPaths.SLASH + ApiPaths.FOLLOWERS).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
         if (response.statusCode() != 200) return null;
         return List.of(ResponseMapper.fromResponse(response, Owner[].class));
@@ -88,6 +88,14 @@ public class UserAction {
 
     public List<Owner> getFollowingForUser(String username) throws ExecutionException, InterruptedException, JsonProcessingException {
         HttpRequest request = client.requestBuilder(ApiPaths.SLASH + ApiPaths.USERS + ApiPaths.SLASH + username + ApiPaths.SLASH + ApiPaths.FOLLOWING).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
+        if (response.statusCode() != 200) return null;
+        return List.of(ResponseMapper.fromResponse(response, Owner[].class));
+    }
+
+
+    public List<Owner> getFollowersForUserWithPagination(String username, int page) throws JsonProcessingException, ExecutionException, InterruptedException {
+        HttpRequest request = client.requestBuilder(ApiPaths.SLASH + ApiPaths.USERS + ApiPaths.SLASH + username + ApiPaths.SLASH + ApiPaths.FOLLOWERS + ApiPaths.PAGINATION + page).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
         if (response.statusCode() != 200) return null;
         return List.of(ResponseMapper.fromResponse(response, Owner[].class));
