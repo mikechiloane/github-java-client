@@ -99,6 +99,12 @@ public class UserAction {
         return List.of(ResponseMapper.fromResponse(response, Owner[].class));
     }
 
+    public List<Owner> getFollowingForUserWithPagination(String username, int page) throws JsonProcessingException, ExecutionException, InterruptedException {
+        HttpRequest request = client.requestBuilder(ApiPaths.SLASH + ApiPaths.USERS + ApiPaths.SLASH + username + ApiPaths.SLASH + ApiPaths.FOLLOWING + ApiPaths.PAGINATION + page).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString()).get();
+        if (response.statusCode() != 200) return null;
+        return List.of(ResponseMapper.fromResponse(response, Owner[].class));
+    }
 
     public List<Owner> getFollowersForUserWithPagination(String username, int page) throws JsonProcessingException, ExecutionException, InterruptedException {
         HttpRequest request = client.requestBuilder(ApiPaths.SLASH + ApiPaths.USERS + ApiPaths.SLASH + username + ApiPaths.SLASH + ApiPaths.FOLLOWERS + ApiPaths.PAGINATION + page).build();
