@@ -18,9 +18,15 @@ import java.util.concurrent.ExecutionException;
 public class UserAction {
     @Getter
     private final Client client;
+    @Getter
+    private String login;
 
     public UserAction(Client client) {
         this.client = client;
+    }
+
+    public void initializeLogin() throws Exception {
+        this.login = this.getAuthenticatedUser().getLogin();
     }
 
     public Owner getUser(String username) throws ExecutionException, InterruptedException, JsonProcessingException {
