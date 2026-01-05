@@ -15,5 +15,5 @@ public final class ApiPaths {
     public static final String SLASH = "/";
     public static final String FOLLOWERS = "followers";
     public static final String STARGAZERS = "stargazers";
-    public static final String PAGINATION= "?per_page=2&page=";
+    public static final String PAGINATION= "?per_page=100&page=";
 }
