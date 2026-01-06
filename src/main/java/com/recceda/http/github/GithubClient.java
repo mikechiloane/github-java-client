@@ -1,11 +1,7 @@
 package com.recceda.http.github;
 
 
-import com.recceda.http.ApiPaths;
-import com.recceda.http.Client;
-import com.recceda.http.HttpConstants;
-import com.recceda.http.RateLimit;
-import com.recceda.http.RateLimitException;
+import com.recceda.http.*;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -25,22 +21,23 @@ public class GithubClient implements Client {
     private volatile RateLimit currentRateLimit;
     private boolean enforceLimitCheck;
 
-    public GithubClient(String token){
+    public GithubClient(String token) {
         this(token, false, true);
     }
 
-    public GithubClient(String token, boolean enableLogging){
+    public GithubClient(String token, boolean enableLogging) {
         this(token, enableLogging, true);
     }
 
     /**
      * Creates a new GitHub client
-     * @param token GitHub API token
-     * @param enableLogging Enable request/response logging
+     *
+     * @param token             GitHub API token
+     * @param enableLogging     Enable request/response logging
      * @param enforceLimitCheck If true, throws RateLimitException when limit is exceeded.
      *                          If false, only tracks and logs rate limits but allows requests.
      */
-    public GithubClient(String token, boolean enableLogging, boolean enforceLimitCheck){
+    public GithubClient(String token, boolean enableLogging, boolean enforceLimitCheck) {
         this.token = token;
         this.baseUrl = ApiPaths.GITHUB_API_BASE_URL;
         this.httpClient = HttpClient.newBuilder()
@@ -85,7 +82,7 @@ public class GithubClient implements Client {
                     if (response != null) {
                         // Update rate limit from response headers
                         updateRateLimitFromResponse(response);
-                        
+
                         if (enableLogging) {
                             logger.info("Received response: Status " + response.statusCode());
                             logger.info("Updated rate limit: " + currentRateLimit);
@@ -105,21 +102,21 @@ public class GithubClient implements Client {
     private <T> void updateRateLimitFromResponse(HttpResponse<T> response) {
         try {
             var headers = response.headers();
-            
+
             var limitOpt = headers.firstValue(HttpConstants.RATE_LIMIT_LIMIT);
             var remainingOpt = headers.firstValue(HttpConstants.RATE_LIMIT_REMAINING);
             var resetOpt = headers.firstValue(HttpConstants.RATE_LIMIT_RESET);
-            
+
             if (limitOpt.isPresent() && remainingOpt.isPresent() && resetOpt.isPresent()) {
                 int limit = Integer.parseInt(limitOpt.get());
                 int remaining = Integer.parseInt(remainingOpt.get());
                 Instant resetTime = Instant.ofEpochSecond(Long.parseLong(resetOpt.get()));
-                
+
                 this.currentRateLimit = new RateLimit(limit, remaining, resetTime);
-                
+
                 if (remaining <= 10) {
                     logger.warning(String.format("GitHub API rate limit running low: %d/%d remaining, resets in %d seconds",
-                        remaining, limit, currentRateLimit.getSecondsUntilReset()));
+                            remaining, limit, currentRateLimit.getSecondsUntilReset()));
                 }
             }
         } catch (Exception e) {
@@ -133,7 +130,8 @@ public class GithubClient implements Client {
     @Override
     public HttpRequest.Builder requestBuilder(String path) {
         return HttpRequest.newBuilder()
-                .uri(URI.create(this.baseUrl+path))
+                .uri(URI.create(this.baseUrl + path))
+                .timeout(Duration.ofSeconds(10))
                 .header("Authorization", HttpConstants.BEARER + HttpConstants.WHITESPACE + this.token);
     }
 }
